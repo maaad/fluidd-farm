@@ -21,13 +21,15 @@ jobs:
         uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
         with:
           images: ghcr.io/${{ github.repository }}
+          flavor: |
+            latest=true
+          tags: |
+            type=semver,value=${{ steps.fluidd.outputs.release }}
           labels: |
             maintainer=maaad
             org.opencontainers.image.title=fluidd-farm
             org.opencontainers.image.description=fluidd-core
             org.opencontainers.image.vendor=fluidd-core
-          tags: |
-            type=raw,value=${{ steps.fluidd.outputs.release }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -53,7 +55,7 @@ jobs:
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
           push: ${{ github.event_name != 'pull_request' }}
           labels: ${{ steps.meta.outputs.labels }}
-          tags: ${{ steps.meta.outputs.tags }}, ghcr.io/${{ github.repository }}:latest
+          tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
