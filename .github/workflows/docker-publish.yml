@@ -2,7 +2,7 @@ name: Build Docker Images
 on: [push, repository_dispatch]
 
 jobs:
-  publish-docker:
+  build:
     name: Publish Docker Image
     runs-on: ubuntu-latest
     steps:
