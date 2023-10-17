@@ -96,7 +96,7 @@ jobs:
       - uses: int128/docker-manifest-create-action@v1
         with:
           #tags: ghcr.io/${{ github.repository }}:${{ steps.fluidd.outputs.release }}
-          tags: ${{ steps.metadata.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags }}
           suffixes: |
             -amd64
             -arm64
