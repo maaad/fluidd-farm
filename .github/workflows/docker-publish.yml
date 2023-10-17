@@ -57,13 +57,12 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      - name: Create and push manifest images
-        uses: Noelware/docker-manifest-action@master # or use a pinned version in the Releases tab
+
+      - uses: int128/docker-manifest-create-action@v1
         with:
-          inputs: ghcr.io/${{ github.repository }}:latest
-          images: ghcr.io/${{ github.repository }}:${{ steps.fluidd.outputs.release }}
-          push: false
-          amend: true
+          tags: ghcr.io/${{ github.repository }}:${{ steps.fluidd.outputs.release }}
+          suffixes: |
+            -linux-amd64
 
   cleanup:
     needs:
