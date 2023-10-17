@@ -58,12 +58,7 @@ jobs:
           tags: ghcr.io/${{ github.repository }}:${{ steps.fluidd.outputs.release }}, ghcr.io/${{ github.repository }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-  build-multi-architecture:
-    needs:
-      - build
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
+
       - uses: docker/login-action@v2
         with:
           registry: ghcr.io
