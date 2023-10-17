@@ -77,8 +77,8 @@ jobs:
         with:
           tags: ${{ steps.metadata.outputs.tags }}
           suffixes: |
-            -linux-amd64
-            -linux-arm64
+            -amd64
+            -arm64
   cleanup:
     needs:
       - build
