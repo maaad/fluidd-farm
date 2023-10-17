@@ -1,14 +1,16 @@
 name: Build Docker Images
 on: [push, repository_dispatch]
-env:
-  TARGET_PLATFORMS: linux/amd64,linux/arm64
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build:
     name: Publish Docker Image
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm64
     steps:
       - id: fluidd
         uses: pozetroninc/github-action-get-latest-release@master
@@ -25,8 +27,7 @@ jobs:
         uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
         with:
           images: ghcr.io/${{ github.repository }}
-          flavor: |
-            latest=true
+          flavor: suffix=-${{ matrix.platform }}, latest=true
           tags: |
             type=raw,value=${{ steps.fluidd.outputs.release }}
           labels: |
@@ -56,12 +57,19 @@ jobs:
           build-args: |
             FLUIDD_VERSION=${{ steps.fluidd.outputs.release }}
           file: ./Dockerfile
-          platforms: ${{ env.TARGET_PLATFORMS }}
+          platforms: ${{ matrix.platform }}
           push: ${{ github.event_name != 'pull_request' }}
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Create and push manifest images
+        uses: Noelware/docker-manifest-action@master # or use a pinned version in the Releases tab
+        with:
+            inputs: ghcr.io/${{ github.repository }}:latest
+            images: ghcr.io/${{ github.repository }}:latest-amd64, ghcr.io/${{ github.repository }}:latest-arm64
+            push: true
 
   cleanup:
     needs:
