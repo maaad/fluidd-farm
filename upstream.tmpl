@@ -1,0 +1,4 @@
+upstream $HOSTNAME {
+    ip_hash;
+    server $FQDN:7125;
+}
