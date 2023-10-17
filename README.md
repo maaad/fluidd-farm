@@ -12,11 +12,11 @@ print.home:~# docker run -e PRINTER=v0.home,e3p.home -p80:80 ghcr.io/maaad/fluid
 ```
 
 ### fluidd configuration
-![fluidd config](https://github.com/maaad/fluidd-farm/docs/images/fluidd1.png)
-![fluidd config](https://github.com/maaad/fluidd-farm/docs/images/fluidd2.png)
+![fluidd config](https://github.com/maaad/fluidd-farm/blob/main/docs/images/fluidd1.png?raw=true)
+![fluidd config](https://github.com/maaad/fluidd-farm/blob/main/docs/images/fluidd2.png?raw=true)
 
 ### OrcaSlicer 
-![orcaslicer config](https://github.com/maaad/fluidd-farm/docs/images/orcaslicer.png)
+![orcaslicer config](https://github.com/maaad/fluidd-farm/blob/main/docs/images/orcaslicer.png?raw=true)
 
 ### moonraker.conf
 Add your farm domain to cors_domains for every printer
