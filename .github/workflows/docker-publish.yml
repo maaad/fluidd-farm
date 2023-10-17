@@ -89,10 +89,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.PUSH_TOKEN }}
 
+      - uses: docker/metadata-action@v4
+        id: metadata
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=raw,value=${{ steps.fluidd.outputs.release }}
+
       - uses: int128/docker-manifest-create-action@v1
         with:
-          tags: ghcr.io/${{ github.repository }}:latest}
-#          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags }}
           suffixes: |
             -amd64
             -arm64
