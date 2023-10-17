@@ -1,5 +1,6 @@
 # Fluidd Farm
 [![Build Docker Images](https://github.com/maaad/fluidd-farm/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/maaad/fluidd-farm/actions/workflows/docker-publish.yml)
+[![Latest Release](https://img.shields.io/github/release/fluidd-core/fluidd.svg?style=flat-square)](https://github.com/fluidd-core/fluidd/releases/latest)
 
 Fluidd standalone install without klipper and moonraker for multiple printers farm. You need only klipper and moonraker installed on the printer side.
 
@@ -13,7 +14,6 @@ print.home:~# docker run -e PRINTER=v0.home,e3p.home -p80:80 ghcr.io/maaad/fluid
 
 Or 
 
-### kubectl 
 ```yaml
 kubectl apply -f - <<EOF
 apiVersion: apps/v1
@@ -60,9 +60,9 @@ cors_domains:
   *.home
 ```
 
-### Settings
+## Settings
 
-#### Environment variables
+### Environment variables
 
 ```bash
 docker run -e PRINTER=printer1,printer2.local,printer3.home.lan
