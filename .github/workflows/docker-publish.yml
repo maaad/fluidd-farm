@@ -90,7 +90,7 @@ jobs:
           password: ${{ secrets.PUSH_TOKEN }}
 
       - uses: docker/metadata-action@v4
-        id: metadata
+        id: meta
         with:
           images: ghcr.io/${{ github.repository }}
           tags: |
