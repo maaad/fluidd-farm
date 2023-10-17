@@ -26,6 +26,36 @@ cors_domains:
   *.local
   *.home
 ```
+
+### kubectl 
+```yaml
+kubectl apply -f - <<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluidd
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: fluidd
+      app.kubernetes.io/name: fluidd
+  replicas: 1 
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: fluidd
+        app.kubernetes.io/name: fluidd
+    spec:
+      containers:
+      - name: fluidd
+        image: ghcr.io/maaad/fluidd-farm:latest
+        env:
+        - name: PRINTER
+          value: printer1.local,printer2.local
+        imagePullPolicy: Always
+EOF
+```
+
 ## Configuration
 
 #### Environment variables
