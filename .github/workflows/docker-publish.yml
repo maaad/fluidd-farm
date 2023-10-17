@@ -60,7 +60,7 @@ jobs:
           cache-to: type=gha,mode=max
       - uses: int128/docker-manifest-create-action@v1
         with:
-          tags: ghcr.io/${{ github.repository }}:${{ steps.fluidd.outputs.release }}, ghcr.io/${{ github.repository }}:latest
+          tags: ghcr.io/${{ github.repository }}:${{ steps.fluidd.outputs.release }}
           suffixes: |
             -linux-amd64
             -linux-arm64
