@@ -24,7 +24,7 @@ jobs:
           flavor: |
             latest=true
           tags: |
-            type=semver,value=${{ steps.fluidd.outputs.release }}
+            type=raw,value=${{ steps.fluidd.outputs.release }}
           labels: |
             maintainer=maaad
             org.opencontainers.image.title=fluidd-farm
