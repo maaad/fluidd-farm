@@ -5,12 +5,6 @@ jobs:
   build:
     name: Publish Docker Image
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        platform:
-          - amd64
-          - arm64
     steps:
       - id: fluidd
         uses: pozetroninc/github-action-get-latest-release@master
@@ -78,13 +72,6 @@ jobs:
           owner: fluidd-core
           repo: fluidd
           excludes: prerelease, draft
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
-        with:
-          tags: |
-            type=raw,value=${{ steps.fluidd.outputs.release }}
-          images: ghcr.io/${{ github.repository }}
 
       - name: Log in to the Container registry
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
@@ -95,8 +82,8 @@ jobs:
 
       - uses: int128/docker-manifest-create-action@v1
         with:
-          #tags: ghcr.io/${{ github.repository }}:${{ steps.fluidd.outputs.release }}
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ghcr.io/${{ github.repository }}:latest}
+#          tags: ${{ steps.meta.outputs.tags }}
           suffixes: |
             -amd64
             -arm64
