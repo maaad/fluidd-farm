@@ -26,12 +26,9 @@ jobs:
         id: metadata
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          #flavor: suffix=-${{ matrix.platform }}
 	  tags: |
-           # minimal
-           type=semver,pattern={{version}}
-           # use custom value instead of git tag
-           type=semver,pattern={{version}},value=${{ steps.fluidd.outputs.release }}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{version}},value=${{ steps.fluidd.outputs.release }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
