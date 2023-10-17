@@ -22,20 +22,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
+      - uses: docker/metadata-action@v5
+        id: metadata
         with:
-          # list of Docker images to use as base name for tags
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha     
+          #flavor: suffix=-${{ matrix.platform }}
+	  tags: |
+           # minimal
+           type=semver,pattern={{version}}
+           # use custom value instead of git tag
+           type=semver,pattern={{version}},value=${{ steps.fluidd.outputs.release }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -62,15 +58,16 @@ jobs:
           platforms: ${{ matrix.platform }}
           push: ${{ github.event_name != 'pull_request' }}
           labels: ${{ steps.meta.outputs.labels }}
-          tags: ghcr.io/${{ github.repository }}:${{ steps.fluidd.outputs.release }}, ghcr.io/${{ github.repository }}:latest
+          tags: ${{ steps.meta.outputs.tags }}
+          #tags: ghcr.io/${{ github.repository }}:${{ steps.fluidd.outputs.release }}, ghcr.io/${{ github.repository }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      - uses: int128/docker-manifest-create-action@v1
-        with:
-          tags: ghcr.io/${{ github.repository }}:${{ steps.fluidd.outputs.release }}
-          suffixes: |
-            -linux-amd64
-            -linux-arm64
+#      - uses: int128/docker-manifest-create-action@v1
+ #       with:
+  #        tags: ghcr.io/${{ github.repository }}:${{ steps.fluidd.outputs.release }}
+   #       suffixes: |
+    #        -linux-amd64
+     #       -linux-arm64
 
   cleanup:
     needs:
