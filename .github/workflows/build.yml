@@ -1,18 +1,18 @@
-name: BUILD
+name: Build Docker Images
+on: [push, repository_dispatch]
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
 jobs:
   publish-docker:
     name: Publish Docker Image
-    if: ${{ github.event_name != 'pull_request' }}
     runs-on: ubuntu-latest
     steps:
+      - id: fluidd
+        uses: pozetroninc/github-action-get-latest-release@master
+        with:
+          owner: fluidd-core
+          repo: fluidd
+          excludes: prerelease, draft
+
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -53,4 +53,5 @@ jobs:
           push: true
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
+          tags: latest, ${{ steps.fluidd.outputs.release }}
 
