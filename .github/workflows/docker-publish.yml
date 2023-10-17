@@ -5,12 +5,6 @@ jobs:
   build:
     name: Publish Docker Image
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        platform:
-          - linux/amd64
-          - linux/arm64
     steps:
       - id: fluidd
         uses: pozetroninc/github-action-get-latest-release@master
@@ -27,7 +21,7 @@ jobs:
         uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
         with:
           images: ghcr.io/${{ github.repository }}
-          flavor: suffix=-${{ matrix.platform }}, latest=true
+          flavor: latest=true
           tags: |
             type=raw,value=${{ steps.fluidd.outputs.release }}
           labels: |
@@ -57,7 +51,7 @@ jobs:
           build-args: |
             FLUIDD_VERSION=${{ steps.fluidd.outputs.release }}
           file: ./Dockerfile
-          platforms: ${{ matrix.platform }}
+          platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ steps.meta.outputs.tags }}
