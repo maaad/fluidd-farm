@@ -59,12 +59,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - uses: int128/docker-manifest-create-action@v1
-        with:
-          tags: ${{ steps.fluidd.outputs.release }} 
-          suffixes: |
-            -amd64
-            -arm64
   cleanup:
     needs:
       - build
