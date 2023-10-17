@@ -67,9 +67,9 @@ jobs:
       - name: Create and push manifest images
         uses: Noelware/docker-manifest-action@master # or use a pinned version in the Releases tab
         with:
-            inputs: ghcr.io/${{ github.repository }}:latest
-            images: ghcr.io/${{ github.repository }}:latest-amd64, ghcr.io/${{ github.repository }}:latest-arm64
-            push: true
+          inputs: ghcr.io/${{ github.repository }}:latest
+          images: ghcr.io/${{ github.repository }}:latest-linux-amd64, ghcr.io/${{ github.repository }}:latest-linux-arm64
+          push: true
 
   cleanup:
     needs:
