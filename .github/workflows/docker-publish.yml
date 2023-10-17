@@ -58,7 +58,33 @@ jobs:
           tags: ghcr.io/${{ github.repository }}:${{ steps.fluidd.outputs.release }}, ghcr.io/${{ github.repository }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          
+  build-multi-architecture:
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.PUSH_TOKEN }}
+      - uses: docker/metadata-action@v4
+        id: metadata
+        with:
+          images: ghcr.io/${{ github.repository }}
+      - uses: int128/docker-manifest-create-action@v1
+        with:
+          tags: ${{ steps.metadata.outputs.tags }}
+          suffixes: |
+            -linux-amd64
+            -linux-arm64
+  cleanup:
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
       - name: Delete all containers from repository without tags
         uses: Chizkiyahu/delete-untagged-ghcr-action@v2
         with:
