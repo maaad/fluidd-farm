@@ -1,7 +1,7 @@
 # Fluidd Farm
 [![Build Docker Images](https://github.com/maaad/fluidd-farm/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/maaad/fluidd-farm/actions/workflows/docker-publish.yml)
 
-Fluidd standalone install without klipper and moonraker for multiple printers farm.
+Fluidd standalone install without klipper and moonraker for multiple printers farm. You need only klipper and moonraker installed on the printer side.
 
 ## Deployment
 
