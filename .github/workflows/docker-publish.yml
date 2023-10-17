@@ -46,6 +46,6 @@ jobs:
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
           push: ${{ github.event_name != 'pull_request' }}
           labels: ${{ steps.meta.outputs.labels }}
-          tags: latest, ${{ steps.fluidd.outputs.release }}, ${{ steps.meta.outputs.tags }}
+          tags: latest, ${{ steps.fluidd.outputs.release }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
