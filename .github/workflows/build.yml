@@ -10,7 +10,6 @@ on:
 jobs:
   publish-docker:
     name: Publish Docker Image
-    needs: build
     if: ${{ github.event_name != 'pull_request' }}
     runs-on: ubuntu-latest
     steps:
