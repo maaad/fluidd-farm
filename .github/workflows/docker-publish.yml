@@ -5,12 +5,6 @@ jobs:
   build:
     name: Publish Docker Image
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        platform:
-          - linux/amd64
-          - linux/arm64
     steps:
       - id: fluidd
         uses: pozetroninc/github-action-get-latest-release@master
@@ -33,7 +27,7 @@ jobs:
             org.opencontainers.image.description=fluidd-core
             org.opencontainers.image.vendor=fluidd-core
           tags: |
-            type=semver,pattern={{version}},value=v${{ steps.fluidd.outputs.release }}
+            type=semver,pattern={{version}},value=${{ steps.fluidd.outputs.release }}
 
 
       - name: Set up QEMU
@@ -58,7 +52,6 @@ jobs:
             FLUIDD_VERSION=${{ steps.fluidd.outputs.release }}
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
-          #platforms: ${{ matrix.platform }}
           push: ${{ github.event_name != 'pull_request' }}
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ steps.meta.outputs.tags }}
