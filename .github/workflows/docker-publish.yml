@@ -58,14 +58,12 @@ jobs:
           tags: ghcr.io/${{ github.repository }}:${{ steps.fluidd.outputs.release }}, ghcr.io/${{ github.repository }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      - name: Push manifest
-        uses: pixelfederation/gh-action-manifest-tool@v0.1.0 #check for latest tag
+      - uses: int128/docker-manifest-create-action@v1
         with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.PUSH_TOKEN }}
-          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
-          template: ${{ env.registry }}/${{ env.image_name  }}:${{ env.image_tag }}-ARCH
-          target: ${{ env.registry }}/${{ env.image_name  }}:${{ env.image_tag }}
+          tags: ghcr.io/${{ github.repository }}:${{ steps.fluidd.outputs.release }}, ghcr.io/${{ github.repository }}:latest
+          suffixes: |
+            -linux-amd64
+            -linux-arm64
 
   cleanup:
     needs:
