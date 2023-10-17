@@ -7,6 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      matrix:
+        platform:
+          - amd64
+          - arm64
     steps:
       - id: fluidd
         uses: pozetroninc/github-action-get-latest-release@master
@@ -23,7 +27,7 @@ jobs:
         uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
         with:
           images: ghcr.io/${{ github.repository }}
-          flavor: latest=true
+          flavor: suffix=-${{ matrix.platform }},latest=true
           tags: |
             type=raw,value=${{ steps.fluidd.outputs.release }}
           labels: |
@@ -54,7 +58,7 @@ jobs:
             FLUIDD_VERSION=${{ steps.fluidd.outputs.release }}
           file: ./Dockerfile
           provenance: false
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ matrix.platform }}
           push: ${{ github.event_name != 'pull_request' }}
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ steps.meta.outputs.tags }}
@@ -63,11 +67,41 @@ jobs:
 
 
   post-build:
+    name: Post-build tasks
     needs:
       - build
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - id: fluidd
+        uses: pozetroninc/github-action-get-latest-release@master
+        with:
+          owner: fluidd-core
+          repo: fluidd
+          excludes: prerelease, draft
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.PUSH_TOKEN }}
+
+      - uses: docker/metadata-action@v4
+        id: meta
+        with:
+          images: ghcr.io/${{ github.repository }}
+          flavor: latest=true
+          tags: |
+            type=raw,value=${{ steps.fluidd.outputs.release }}
+
+      - uses: int128/docker-manifest-create-action@v1
+        with:
+          tags: ${{ steps.meta.outputs.tags }}
+          suffixes: |
+            -amd64
+            -arm64
+
       - name: Delete all containers from repository without tags
         uses: Chizkiyahu/delete-untagged-ghcr-action@v2
         with:
