@@ -25,10 +25,7 @@ jobs:
       - uses: docker/metadata-action@v5
         id: metadata
         with:
-          images: |
-            name/app
-#        with:
- #         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ghcr.io/${{ github.repository }}
           labels: |
             maintainer=maaad
             org.opencontainers.image.title=fluidd-farm
