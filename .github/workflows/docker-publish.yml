@@ -75,7 +75,7 @@ jobs:
           images: ghcr.io/${{ github.repository }}
       - uses: int128/docker-manifest-create-action@v1
         with:
-          tags: ${{ steps.metadata.outputs.tags }}
+          tags: ${{ steps.fluidd.outputs.release }} 
           suffixes: |
             -amd64
             -arm64
