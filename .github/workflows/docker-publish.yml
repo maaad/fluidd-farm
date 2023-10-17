@@ -52,12 +52,20 @@ jobs:
           build-args: |
             FLUIDD_VERSION=${{ steps.fluidd.outputs.release }}
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
+          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
           push: ${{ github.event_name != 'pull_request' }}
           labels: ${{ steps.meta.outputs.labels }}
           tags: ghcr.io/${{ github.repository }}:${{ steps.fluidd.outputs.release }}, ghcr.io/${{ github.repository }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Push manifest
+        uses: pixelfederation/gh-action-manifest-tool@v0.1.0 #check for latest tag
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.PUSH_TOKEN }}
+          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
+          template: ${{ env.registry }}/${{ env.image_name  }}:${{ env.image_tag }}-ARCH
+          target: ${{ env.registry }}/${{ env.image_name  }}:${{ env.image_tag }}
 
   cleanup:
     needs:
