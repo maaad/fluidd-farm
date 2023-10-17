@@ -22,17 +22,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - uses: docker/metadata-action@v4
-        id: metadata
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
         with:
-          images: ghcr.io/${{ github.repository }}
-          labels: |
-            maintainer=maaad
-            org.opencontainers.image.title=fluidd-farm
-            org.opencontainers.image.description=fluidd-core
-            org.opencontainers.image.vendor=fluidd-core
-	  tags: |
-            type=semver,pattern={{version}},value=${{ steps.fluidd.outputs.release }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+
+          #labels: |
+          #  maintainer=maaad
+          #  org.opencontainers.image.title=fluidd-farm
+          #  org.opencontainers.image.description=fluidd-core
+          #  org.opencontainers.image.vendor=fluidd-core
+	  #tags: |
+          #  type=semver,pattern={{version}},value=${{ steps.fluidd.outputs.release }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
