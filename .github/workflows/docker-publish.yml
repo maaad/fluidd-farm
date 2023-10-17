@@ -63,7 +63,6 @@ jobs:
           tags: ghcr.io/${{ github.repository }}:${{ steps.fluidd.outputs.release }}
           suffixes: |
             -linux-amd64
-            -linux-arm64
 
   cleanup:
     needs:
