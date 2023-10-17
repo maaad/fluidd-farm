@@ -1,7 +1,7 @@
 FROM --platform=${BUILDPLATFORM:-linux/amd64} nginx:alpine as image
 WORKDIR /work
 
-RUN curl -L https://github.com/fluidd-core/fluidd/releases/download/v1.26.0/fluidd.zip -o /usr/share/nginx/html/fluidd.zip \
+RUN curl -L https://github.com/fluidd-core/fluidd/releases/download/$FLUIDD_VERSION/fluidd.zip -o /usr/share/nginx/html/fluidd.zip \
 && unzip -o /usr/share/nginx/html/fluidd.zip -d /usr/share/nginx/html \
 && rm /usr/share/nginx/html/fluidd.zip
 
