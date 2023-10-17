@@ -62,7 +62,7 @@ jobs:
         with:
           inputs: ghcr.io/${{ github.repository }}:latest
           images: ghcr.io/${{ github.repository }}:${{ steps.fluidd.outputs.release }}
-          push: true
+          push: false
           ammend: true
 
   cleanup:
