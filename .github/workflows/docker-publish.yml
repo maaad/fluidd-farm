@@ -110,3 +110,9 @@ jobs:
             repository: ${{ github.repository }}
             untagged_only: true
             owner_type: user
+
+      - name: Delete workflow runs
+        uses: GitRML/delete-workflow-runs@main
+        with:
+          retain_days: 1
+          keep_minimum_runs: 3
