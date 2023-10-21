@@ -9,7 +9,7 @@ Fluidd standalone install without klipper and moonraker for multiple printers fa
 To deploy this project run
 
 ```bash
-print.home:~# docker run -e PRINTER=v0.home,e3p.home -p80:80 ghcr.io/maaad/fluidd-farm:latesty
+print.home:~# docker run -e PRINTER=v0.home,e3p.home -p80:80 ghcr.io/maaad/fluidd-farm:latest
 ```
 
 Or 
