@@ -1,5 +1,6 @@
 # Fluidd Farm
 [![Build Docker Images](https://github.com/maaad/fluidd-farm/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/maaad/fluidd-farm/actions/workflows/docker-publish.yml)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Latest Release](https://img.shields.io/github/release/fluidd-core/fluidd.svg?style=flat-square)](https://github.com/fluidd-core/fluidd/releases/latest)
 
 Fluidd standalone install without klipper and moonraker for multiple printers farm. You need only klipper and moonraker installed on the printer side.
