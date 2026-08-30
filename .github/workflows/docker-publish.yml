@@ -1,16 +1,22 @@
 name: Build Docker Images
-on: [push, repository_dispatch,workflow_dispatch]
+
+on:
+  push:
+  repository_dispatch:
+  workflow_dispatch:
 
 jobs:
   build:
-    name: Publish Docker Image
+    name: Publish Docker Image (${{ matrix.platform }})
     runs-on: ubuntu-latest
+
     strategy:
       fail-fast: false
       matrix:
         platform:
           - amd64
           - arm64
+
     steps:
       - id: fluidd
         uses: pozetroninc/github-action-get-latest-release@master
@@ -27,7 +33,8 @@ jobs:
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
           images: ghcr.io/${{ github.repository }}
-          flavor: suffix=-${{ matrix.platform }},latest=true
+          flavor: |
+            suffix=-${{ matrix.platform }},latest=true
           tags: |
             type=raw,value=${{ steps.fluidd.outputs.release }}
           labels: |
@@ -54,24 +61,24 @@ jobs:
         uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
         with:
           context: .
+          file: ./Dockerfile
           build-args: |
             FLUIDD_VERSION=${{ steps.fluidd.outputs.release }}
-          file: ./Dockerfile
+          platforms: linux/${{ matrix.platform }}
+          push: true
           provenance: false
-          platforms: ${{ matrix.platform }}
-          push: ${{ github.event_name != 'pull_request' }}
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-
   post-build:
-    name: Post-build tasks
+    name: Create multi-arch manifest
     needs:
       - build
     runs-on: ubuntu-latest
     timeout-minutes: 10
+
     steps:
       - id: fluidd
         uses: pozetroninc/github-action-get-latest-release@master
@@ -87,29 +94,42 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.PUSH_TOKEN }}
 
-      - uses: docker/metadata-action@v6
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 # v3.0.0
+
+      - name: Extract Docker metadata
         id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
           images: ghcr.io/${{ github.repository }}
-          flavor: latest=true
+          flavor: |
+            latest=true
           tags: |
             type=raw,value=${{ steps.fluidd.outputs.release }}
+          labels: |
+            maintainer=maaad
+            org.opencontainers.image.title=fluidd-farm
+            org.opencontainers.image.description=fluidd-core
+            org.opencontainers.image.vendor=fluidd-core
 
-      - uses: int128/docker-manifest-create-action@v2
+      - name: Create multi-arch manifest
+        uses: int128/docker-manifest-create-action@v2
         with:
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
-          suffixes: |
-            -amd64
-            -arm64
+          index-annotations: ${{ steps.meta.outputs.labels }}
+          sources: |
+            ghcr.io/${{ github.repository }}:${{ steps.fluidd.outputs.release }}-amd64
+            ghcr.io/${{ github.repository }}:${{ steps.fluidd.outputs.release }}-arm64
 
       - name: Delete all containers from repository without tags
         uses: Chizkiyahu/delete-untagged-ghcr-action@v6
         with:
-            token: ${{ secrets.PUSH_TOKEN }}
-            repository_owner: ${{ github.repository_owner }}
-            repository: ${{ github.repository }}
-            untagged_only: true
-            owner_type: user
+          token: ${{ secrets.PUSH_TOKEN }}
+          repository_owner: ${{ github.repository_owner }}
+          repository: ${{ github.repository }}
+          untagged_only: true
+          owner_type: user
 
       - name: Delete workflow runs
         uses: GitRML/delete-workflow-runs@main
